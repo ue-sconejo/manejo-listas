@@ -7,8 +7,6 @@ import java.util.PriorityQueue;
 import inventory.*;
 
 public class main {
-
-    //  Definicion de variables
     static Console console = System.console();
 
     static Product[] productos = new Product[99];
@@ -34,13 +32,14 @@ public class main {
         inventario.add(productos[1]);
         inventario.add(productos[2]);
 
+        // Registrar Ordenes
         colaOrdenes.add(new Order("Jhon", productos[2], 2, 2));
         colaOrdenes.add(new Order("Juan", productos[1], 2, 1));
-        colaOrdenes.add(new Order("Maria", productos[4], 10, 5));
+        colaOrdenes.add(new Order("Maria", productos[3], 10, 5));
 
         colaPrioritaria.add(new Order("Jhon", productos[2], 2, 2));
         colaPrioritaria.add(new Order("Juan", productos[1], 2, 1));
-        colaPrioritaria.add(new Order("Maria", productos[4], 10, 5));
+        colaPrioritaria.add(new Order("Maria", productos[3], 10, 5));
         
         menuPrincipal();
     }
