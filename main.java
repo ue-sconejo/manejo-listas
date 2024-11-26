@@ -8,7 +8,7 @@ import inventory.*;
 
 public class main {
 
-    // static Scanner lectura = new Scanner (System.in);
+    //  Definicion de variables
     static Console console = System.console();
 
     static Product[] productos = new Product[99];
@@ -22,7 +22,6 @@ public class main {
     static PriorityQueue<Order> colaPrioritaria = new PriorityQueue<>();
 
     public static void main(String[] args) {
-
         // 1.1 Inventario Utilizar un arreglo para
         // inicializar los productos del inventario con su nombre y cantidad.
         productos[0] = new Product("Lapiz", 10);
@@ -46,7 +45,9 @@ public class main {
         menuPrincipal();
     }
 
-    // Crear una interfaz amigable en la consola para mostrar las operaciones realizadas.
+    //  Crear una interfaz amigable en la consola para mostrar las operaciones realizadas.
+    //  Menu principal
+    //  3. Crear una interfaz amigable en la consola para mostrar las operaciones realizadas.
     public static void menuPrincipal() {
         limpiarConsola();
         System.out.println("---- Menu Principal ----\n");
@@ -55,6 +56,7 @@ public class main {
 
         String option = console.readLine("Enter con el campo vacio para Salir: ");
 
+        //  Opciones del menu
         switch(option) {
             case "p":
                 menuProductos();
@@ -76,12 +78,13 @@ public class main {
         }
     }
 
+    //  Menu de los productos
     public static void menuProductos(){
         limpiarConsola();
 
         // 1.2 Permitir consultar y actualizar los niveles de inventario.
         System.out.println("---- Menu Poductos ----\n");
-        int cantidadProductos = listarProductos();
+        int cantidadProductos = listarProductos();  // <-- Trae la lista de los productos actuales Array
 
         System.out.println("\n---- Opciones ----");
         System.out.println("(Escribe el ID de un Producto y presione Enter para ver el detalle.)");
@@ -99,11 +102,13 @@ public class main {
         }
     }
 
-    // 2.1 Utilizar una lista dinámica para registrar las órdenes, donde cada orden tenga:
+    //  2.1 Utilizar una lista dinámica para registrar las órdenes, donde cada orden tenga:
+    //  Menu de las ordenes
     public static void menuOrdenes() {
         limpiarConsola();
         System.out.println("---- Lista de Ordenes ----\n");
 
+        //  Verifica si existen registros
         if (ordenes.isEmpty()) {
             System.out.println("Actualmente no hay ordenes registradas\n");
         } else {
@@ -133,14 +138,91 @@ public class main {
         }
     }
 
-    // 2.2 Agregar
+    //  Menu de la bodega fisica
+    public static void menuBodega() {
+        limpiarConsola();
+
+        System.out.println("---- Inventario ----\n");
+        
+        // Muestra en pantalla la lista de productos del inventario sin organizar
+        for (Product caja : inventario) {
+            caja.mostrarDetalles();
+        }
+
+        System.out.println("\nd) Desapilar caja, a) Agregar Caja");
+        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
+
+        if (option.contains("a")) {
+            // Agrega un nuevo elemento a el inicio de la pila
+            System.out.println("Escribe el ID del producto que quieres agregar:");
+            listarProductos();  // <-- Trae la lista de los productos actuales Array
+            int idProd = Integer.parseInt(console.readLine(":"));
+            inventario.push(productos[idProd-1]);
+            menuBodega();
+        } else if(option.contains("d")) {
+            // Borra el ultimo elemento
+            inventario.pop();
+            menuBodega();
+        } else if (option.contains("")) {
+            menuPrincipal();
+        } else {
+            menuPrincipal();
+        }
+
+    }
+
+    //  Menu del tipo de estructura Cola para las ordenes registradas
+    public static void menuCola () {
+        limpiarConsola();
+
+        System.out.println("---- Inventario Cola de Ordendes Regulares ----\n");
+
+        for (Order orden : colaOrdenes) {
+            orden.mostrarDetalles();
+        }
+
+        System.out.println("t) Terminar la primera orden de la cola");
+        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
+
+        if (option.contains("t")) {
+            // Borra el ultimo elemento
+            colaOrdenes.pop();
+            menuCola();
+        } else {
+            menuPrincipal();
+        }
+    }
+    //  Menu de las ordenes organizadas por prioridad
+    public static void menuColaPrioritaria() {
+        limpiarConsola();
+
+        System.out.println("---- Inventario Cola Priorizada ----\n");
+
+        //  Muestra las Ordenes de la cola prioritaria
+        for (Order orden : colaPrioritaria) {
+            orden.mostrarDetalles();
+        }
+        System.out.println("\nt) Terminar la primera orden de la cola");
+        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
+
+        if (option.contains("t")) {
+            // Eliminar y obtener la tarea con mayor prioridad
+            colaPrioritaria.poll();
+            menuColaPrioritaria();
+        } else {
+            menuPrincipal();
+        }
+    }
+
+    // 2.2 Agregar una orden
+    // Formulario para registrar una orden dentro de las diferentes Listas
     public static void formularioOrden() {
         limpiarConsola();
 
         String cliente = console.readLine("Ingrese el nombre del cliente: ");
         limpiarConsola();
 
-        listarProductos();
+        listarProductos();  // <-- Trae la lista de los productos actuales Array
 
         String idProducto = console.readLine("Igrese el id del Producto: ");
         limpiarConsola();
@@ -157,6 +239,7 @@ public class main {
             Integer.parseInt(cantidad),
             Integer.parseInt(prio)));
 
+        //  Agregar a la Cola
         colaOrdenes.add(new Order(
             cliente,
             productos[Integer.parseInt(idProducto)-1],
@@ -170,19 +253,6 @@ public class main {
             Integer.parseInt(prio)));
         
         menuOrdenes();
-    }
-
-    public static int listarProductos() {
-        int index = 0;
-
-        for(int i=0;i<productos.length;i++){
-            if (productos[i] != null) {
-                index++;
-                System.out.print("Id: "+ index + " ");
-                productos[i].mostrarDetalles();
-            }
-        }
-        return index;
     }
 
     // 1.2 Permitir consultar y actualizar los niveles de inventario.
@@ -216,6 +286,7 @@ public class main {
         }
     }
 
+    //  Ver el detalle de una orden
     public static void verOrden(int index) {
         limpiarConsola();
 
@@ -223,7 +294,7 @@ public class main {
 
         Order orden = ordenes.get(index);
         orden.mostrarDetalles();
-
+        //  Opciones de edicion o eliminacion de la orden actual
         System.out.println("\n---- Opciones ----");
         System.out.println("c) Edit. Nombre, q) Edit. Cantidad, u) Edit. Urgencia,\np) Edit. Producto, d) ELIMINAR Orden");
         String option = console.readLine("Enter con el campo vacio para Volver: ");
@@ -248,7 +319,7 @@ public class main {
                 verOrden(index);
                 break;
             case "p":
-                listarProductos();
+                listarProductos();  // <-- Trae la lista de los productos actuales Array
                 // Actualiza el producto en la orden seleccionada
                 int prodIndex = Integer.parseInt(console.readLine("Ingrese el id del nuevo Producto: "));
                 orden.setProducto(productos[prodIndex-1]);
@@ -267,80 +338,22 @@ public class main {
         }
     }
 
-    public static void menuBodega() {
-        limpiarConsola();
+   
+    // --- Metodos genericos ---
 
-        System.out.println("---- Inventario ----\n");
-        
-        // Muestra en pantalla la lista de productos del inventario sin organizar
-        for (Product caja : inventario) {
-            caja.mostrarDetalles();
+    //  Metodo para traer los elementos dentro de productos y mostrarlos en la consola
+    public static int listarProductos() {
+        int index = 0;
+
+        for(int i=0;i<productos.length;i++){
+            if (productos[i] != null) {
+                index++;
+                System.out.print("Id: "+ index + " ");
+                productos[i].mostrarDetalles();
+            }
         }
-
-        System.out.println("\nd) Desapilar caja, a) Agregar Caja");
-        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
-
-        if (option.contains("a")) {
-            // Agrega un nuevo elemento a el inicio de la pila
-            System.out.println("Escribe el ID del producto que quieres agregar:");
-            listarProductos();
-            int idProd = Integer.parseInt(console.readLine(":"));
-            inventario.push(productos[idProd-1]);
-            menuBodega();
-        } else if(option.contains("d")) {
-            // Borra el ultimo elemento
-            inventario.pop();
-            menuBodega();
-        } else if (option.contains("")) {
-            menuPrincipal();
-        } else {
-            menuPrincipal();
-        }
-
+        return index;
     }
-
-    public static void menuCola () {
-        limpiarConsola();
-
-        System.out.println("---- Inventario Cola de Ordendes Regulares ----\n");
-
-        for (Order orden : colaOrdenes) {
-            orden.mostrarDetalles();
-        }
-
-        System.out.println("t) Terminar la primera orden de la cola");
-        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
-
-        if (option.contains("t")) {
-            // Borra el ultimo elemento
-            colaOrdenes.pop();
-            menuCola();
-        } else {
-            menuPrincipal();
-        }
-    }
-
-    public static void menuColaPrioritaria() {
-        limpiarConsola();
-
-        System.out.println("---- Inventario Cola Priorizada ----\n");
-
-        for (Order orden : colaPrioritaria) {
-            orden.mostrarDetalles();
-        }
-        System.out.println("\nt) Terminar la primera orden de la cola");
-        String option = console.readLine("Enter con el campo vacio para volver el menu Principal: ");
-
-        if (option.contains("t")) {
-            // Eliminar y obtener la tarea con mayor prioridad
-            colaPrioritaria.poll();
-            menuColaPrioritaria();
-        } else {
-            menuPrincipal();
-        }
-    }
-
-    // Metodos genericos
 
     // Metodo para limpiar la consola
     public static void limpiarConsola() {
